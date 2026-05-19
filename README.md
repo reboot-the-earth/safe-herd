@@ -139,16 +139,6 @@ Built-in emergency assistant supporting 6 languages with keyword matching for fi
 ### Alert System (SMS)
 Background polling job that watches fire spread, identifies at-risk registered farms, and sends evacuation plans via SMS. Works offline once the message arrives.
 
-## Demo Flow (3 minutes)
-
-1. **Set the scene** — Lilac Fire ignites near Bonsall. 35 mph Santa Ana winds.
-2. **Show farms at risk** — 3 farms, 150+ cattle, 32 horses, 85 goats in projected path.
-3. **Farm 1: Valley Center Ranch** — 150 cattle, 8 horses, one trailer, 3.5h to fire. System generates full plan with road-following routes.
-4. **Show capacity impact** — Ramona Rodeo capacity drops. Next farmer sees different options.
-5. **Farm 2: Fallbrook Stables** — 24 horses. System routes to Del Mar instead.
-6. **Multilingual** — Switch chat to Spanish, ask "mi granja" — fully translated response.
-7. **The stakes** — 46 horses died in the real Lilac Fire. This system makes that number zero.
-
 ## Tech Stack (All Open Source)
 
 | Layer | Technology |
@@ -230,16 +220,6 @@ By default no Twilio/Textbelt credentials are set, so SMS bodies are written to 
 | [LANDFIRE](https://landfire.gov/) | Fuel type data for fire spread modeling |
 | [OSRM](https://project-osrm.org/) | Road-following route geometry |
 
-## Judge Q&A
-
-| Question | Short Answer |
-|----------|-------------|
-| AI/ML component? | Simplified Rothermel fire spread model + decision tree priority engine. Future: train on historical fire data. |
-| Scales beyond SD? | Architecture is location-agnostic. Swap facility DB and road network for any county. FIRMS/NOAA are global. |
-| No cell service? | Plan downloads as offline PDF/SMS before dead zones. Alert system sends text plans that work without internet. |
-| Open source? | MIT license. All open data: FIRMS, OSM, NOAA, LANDFIRE. Facility DB is community-contributed. |
-| Can farmers use it? | 3 taps. Output is a step-by-step playbook, not a dashboard. Designed for a phone in a field. |
-| Multilingual? | Chat assistant supports 6 languages. Farm data and alerts are fully translated. |
 
 ## License
 
