@@ -29,12 +29,14 @@ function createRouteLabel(text, isRecommended) {
   });
 }
 
+const MAX_ROUTES = 2;
+
 export default function RouteOverlay({ routes }) {
   const routeData = useMemo(() => {
     if (!routes?.routes_to_facilities) return [];
-    return routes.routes_to_facilities.filter(
-      (r) => r.status !== 'no_safe_route' && r.route_geometry
-    );
+    return routes.routes_to_facilities
+      .filter((r) => r.status !== 'no_safe_route' && r.route_geometry)
+      .slice(0, MAX_ROUTES);
   }, [routes]);
 
   if (!routeData.length) return null;
@@ -43,6 +45,8 @@ export default function RouteOverlay({ routes }) {
     <>
       {routeData.map((route) => {
         const isRecommended = route.rank === 1;
+        // OSRM unavailable: graph path is approximate, so draw it dotted
+        const isApprox = route._hasRoadGeometry === false;
         const color = route.safety_score >= 80
           ? '#16a34a'
           : route.safety_score >= 60
@@ -70,7 +74,7 @@ export default function RouteOverlay({ routes }) {
                 color,
                 weight: isRecommended ? 4 : 2.5,
                 opacity: isRecommended ? 0.9 : 0.5,
-                dashArray: isRecommended ? undefined : '10 6',
+                dashArray: isApprox ? '2 8' : isRecommended ? undefined : '10 6',
                 lineCap: 'round',
                 lineJoin: 'round',
               }}

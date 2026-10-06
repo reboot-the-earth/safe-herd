@@ -9,6 +9,8 @@ export const mockRoutes = {
       rank: 1,
       facility_id: "del_mar_fairgrounds",
       facility_name: "Del Mar Fairgrounds",
+      facility_lat: 32.974,
+      facility_lon: -117.268,
       total_time_min: 28,
       total_distance_km: 26,
       safety_score: 95,

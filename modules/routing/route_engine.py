@@ -216,6 +216,8 @@ def find_safe_routes(farm_coords, facility_list, fire_polygons):
                 "rank": None,  # assigned after sorting
                 "facility_id": facility["facility_id"],
                 "facility_name": facility.get("name", facility["facility_id"]),
+                "facility_lat": fac_lat,
+                "facility_lon": fac_lon,
                 "total_time_min": total_time_min,
                 "total_distance_km": total_dist,
                 "safety_score": score,

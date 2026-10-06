@@ -129,8 +129,8 @@ async function fetchOSRMGeometry(startLon, startLat, endLon, endLat) {
 
 /**
  * Normalize route output and replace straight-line geometries with real
- * road-following paths from OSRM. Falls back to the original geometry
- * if OSRM is unavailable.
+ * road-following paths from OSRM. If OSRM is unavailable, keeps the backend
+ * graph geometry and sets `_hasRoadGeometry: false` so it renders as approximate.
  */
 async function normalizeRoutes(raw, origin = null) {
   if (!raw || !raw.routes_to_facilities) return null;
@@ -145,31 +145,29 @@ async function normalizeRoutes(raw, origin = null) {
       if (!Array.isArray(coords) || coords.length < 2) return r;
 
       const startPt = origin ? [origin.lon, origin.lat] : coords[0];
-      const endPt = coords[coords.length - 1];
+
+      // Use the facility's actual coordinates (from backend) so the route
+      // ends exactly at the facility marker, not at a graph-snapped node.
+      const endPt = (r.facility_lon != null && r.facility_lat != null)
+        ? [r.facility_lon, r.facility_lat]
+        : coords[coords.length - 1];
 
       const osrmGeom = await fetchOSRMGeometry(startPt[0], startPt[1], endPt[0], endPt[1]);
       if (osrmGeom?.coordinates?.length) {
         const osrmCoords = [...osrmGeom.coordinates];
 
-        // Ensure route starts exactly at the user pin
         if (!close(osrmCoords[0], startPt)) osrmCoords.unshift(startPt);
-        // Ensure route ends exactly at the facility marker
         if (!close(osrmCoords[osrmCoords.length - 1], endPt)) osrmCoords.push(endPt);
 
-        return { ...r, route_geometry: { ...osrmGeom, coordinates: osrmCoords } };
+        return { ...r, _hasRoadGeometry: true, route_geometry: { ...osrmGeom, coordinates: osrmCoords } };
       }
 
-      // Fallback: prepend origin if needed
-      if (origin && origin.lat != null) {
-        const originPair = [origin.lon, origin.lat];
-        if (!close(coords[0], originPair)) {
-          return {
-            ...r,
-            route_geometry: { ...r.route_geometry, coordinates: [originPair, ...coords] },
-          };
-        }
-      }
-      return r;
+      // OSRM failed — keep the backend graph path, pinned to the farm and
+      // facility markers, and mark it so the renderer can draw it as approximate
+      const fallback = [...coords];
+      if (!close(fallback[0], startPt)) fallback.unshift(startPt);
+      if (!close(fallback[fallback.length - 1], endPt)) fallback.push(endPt);
+      return { ...r, _hasRoadGeometry: false, route_geometry: { ...r.route_geometry, coordinates: fallback } };
     })
   );
 
