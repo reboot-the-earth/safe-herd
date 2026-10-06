@@ -1,4 +1,4 @@
-# WildfireWizards
+# Safeherd
 
 **Wildfire livestock evacuation system for San Diego County**
 
