@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://safeherd.dev/schemas/farm_profile.json",
+  "title": "Farm Profile",
+  "type": "object",
+  "required": ["farm_id", "name", "lat", "lon", "animals"],
+  "properties": {
+    "farm_id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+    "name": { "type": "string", "minLength": 1 },
+    "lat": { "type": "number", "minimum": -90, "maximum": 90 },
+    "lon": { "type": "number", "minimum": -180, "maximum": 180 },
+    "animals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["species", "count"],
+        "properties": {
+          "species": { "$ref": "#/$defs/species" },
+          "count": { "type": "integer", "minimum": 0 },
+          "special_needs": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "trailer_capacity": {
+      "type": "object",
+      "additionalProperties": { "type": "integer", "minimum": 1 }
+    },
+    "phone": { "type": "string" },
+    "smoke_within_5_miles": { "type": "boolean" }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "species": {
+      "type": "string",
+      "enum": [
+        "horses", "miniature_horses", "mules", "donkeys",
+        "cattle", "cattle_calves", "goats", "sheep", "pigs", "poultry"
+      ]
+    }
+  }
+}

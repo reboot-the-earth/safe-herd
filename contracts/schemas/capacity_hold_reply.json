@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://safeherd.dev/schemas/capacity_hold_reply.json",
+  "title": "Capacity Hold Reply",
+  "type": "object",
+  "required": ["request_id", "facility_id", "status"],
+  "properties": {
+    "request_id": { "type": "string" },
+    "hold_id": { "type": "string" },
+    "facility_id": { "type": "string" },
+    "status": { "type": "string", "enum": ["held", "confirmed", "released", "expired", "rejected"] },
+    "animals_held": {
+      "type": "object",
+      "additionalProperties": { "type": "integer", "minimum": 0 }
+    },
+    "expires_at": { "type": "string", "format": "date-time" },
+    "capacity_version": { "type": "integer", "minimum": 1 },
+    "reason": { "type": "string" },
+    "replied_at": { "type": "string", "format": "date-time" },
+    "schema_version": { "type": "string" }
+  },
+  "additionalProperties": false
+}

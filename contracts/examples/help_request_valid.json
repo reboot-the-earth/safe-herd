@@ -1,0 +1,9 @@
+{
+  "request_id": "help_vc_001",
+  "farm_id": "valley_center_ranch",
+  "geohash": "9mudg",
+  "species_needed": ["cattle", "horses"],
+  "message": "Need trailer help for 150 cattle, fire approaching from west",
+  "requested_at": "2017-12-07T18:10:00Z",
+  "schema_version": "0.2"
+}

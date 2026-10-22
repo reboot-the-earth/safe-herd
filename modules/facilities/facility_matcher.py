@@ -29,7 +29,9 @@ from capacity_manager import (
 )
 from trip_calculator import calculate_trips, summarize_trips
 
-FACILITIES_FILE = os.path.join(os.path.dirname(__file__), "data", "facilities.json")
+import sys as _sys
+_sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+from contracts.loader import load_facilities as _contract_load_facilities
 
 # Facilities in neighbouring counties are deprioritised
 OUT_OF_COUNTY_PENALTY = 10
@@ -40,8 +42,7 @@ OUT_OF_COUNTY_PENALTY = 10
 # ---------------------------------------------------------------------------
 
 def load_facilities() -> list[dict]:
-    with open(FACILITIES_FILE, "r") as f:
-        return json.load(f)
+    return _contract_load_facilities()
 
 
 # ---------------------------------------------------------------------------
@@ -244,26 +245,29 @@ def get_evacuation_match(
     top_facility = matched[0] if matched else None
 
     if top_facility and make_reservations:
-        for animal in animal_inventory:
-            species = animal["species"]
-            count = animal["count"]
-            if species in top_facility["can_accept"]:
-                try:
-                    # Look up the raw facility dict so capacity_manager doesn't need to reload
-                    raw_facility = next(
-                        (f for f in facilities if f["id"] == top_facility["facility_id"]), None
-                    )
-                    record = reserve_capacity(farm_id, top_facility["facility_id"], species, count, raw_facility)
-                    reservations_made.append({
-                        "reservation_id": record["reservation_id"],
-                        "facility_id": record["facility_id"],
-                        "facility_name": top_facility["name"],
-                        "species": species,
-                        "count": count,
-                        "expires": record["expires"],
-                    })
-                except ValueError as e:
-                    warnings.append(str(e))
+        animals_to_hold = {
+            a["species"]: a["count"]
+            for a in animal_inventory
+            if a["species"] in top_facility["can_accept"]
+        }
+        if animals_to_hold:
+            try:
+                raw_facility = next(
+                    (f for f in facilities if f["id"] == top_facility["facility_id"]), None
+                )
+                record = reserve_capacity(
+                    farm_id, top_facility["facility_id"],
+                    animals=animals_to_hold, facility=raw_facility,
+                )
+                reservations_made.append({
+                    "hold_id": record["hold_id"],
+                    "facility_id": record["facility_id"],
+                    "facility_name": top_facility["name"],
+                    "animals": animals_to_hold,
+                    "expires": record["expires"],
+                })
+            except ValueError as e:
+                warnings.append(str(e))
 
     if top_facility:
         evacuation_trips = calculate_trips(

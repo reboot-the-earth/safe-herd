@@ -1,0 +1,19 @@
+{
+  "farm_coords": {"lat": 33.22, "lon": -117.03},
+  "fire_snapshot_id": "lilac_2017_20171207T1800Z",
+  "graph_source": "osm",
+  "routes_to_facilities": [
+    {
+      "facility_id": "del_mar_fairgrounds",
+      "facility_name": "Del Mar Fairgrounds",
+      "facility_lat": 32.9741,
+      "facility_lon": -117.2684,
+      "status": "safe",
+      "total_time_min": 38,
+      "distance_km": 42.1,
+      "route_geometry": {"type": "LineString", "coordinates": [[-117.03, 33.22], [-117.2684, 32.9741]]},
+      "segments": []
+    }
+  ],
+  "schema_version": "0.2"
+}

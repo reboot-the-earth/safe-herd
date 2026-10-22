@@ -20,8 +20,14 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 MODULES = os.path.join(ROOT, "modules")
 DATA = os.path.join(ROOT, "data")
 
+sys.path.insert(0, ROOT)
 sys.path.insert(0, MODULES)
 sys.path.insert(0, os.path.join(MODULES, "facilities"))
+
+from contracts.loader import load_facilities as load_contract_facilities
+from facilities.capacity_manager import (
+    reserve_capacity, confirm_hold, release_hold, get_hold, get_farm_holds,
+)
 
 from fire_detection import get_fire_data
 from routing import find_safe_routes
@@ -52,8 +58,7 @@ def _load_fire_data_file():
 
 
 def _load_facilities_file():
-    with open(os.path.join(DATA, "facilities.json")) as f:
-        return json.load(f)
+    return {"facilities": load_contract_facilities()}
 
 
 DEMO_FARMS = [
@@ -255,6 +260,67 @@ def farmer_plan_endpoint():
         return jsonify(plan)
     except Exception as e:
         return jsonify({"error": str(e)}), 200
+
+
+@app.route("/api/holds", methods=["POST"])
+def holds_create():
+    """
+    Create a capacity hold.
+
+    POST body: {
+        "farm_id": "valley_center_ranch",
+        "facility_id": "del_mar_fairgrounds",
+        "animals": {"cattle": 50, "horses": 8},
+        "request_id": "optional-idempotency-key"
+    }
+    """
+    body = request.get_json(force=True)
+    farm_id = body.get("farm_id")
+    facility_id = body.get("facility_id")
+    animals = body.get("animals")
+    request_id = body.get("request_id")
+
+    if not farm_id or not facility_id or not animals:
+        return jsonify({"error": "farm_id, facility_id, and animals are required"}), 400
+
+    try:
+        hold = reserve_capacity(farm_id, facility_id, animals=animals, request_id=request_id)
+        return jsonify(hold), 201
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 409
+
+
+@app.route("/api/holds/<hold_id>", methods=["GET"])
+def holds_get(hold_id):
+    hold = get_hold(hold_id)
+    if not hold:
+        return jsonify({"error": "Hold not found"}), 404
+    return jsonify(hold)
+
+
+@app.route("/api/holds/<hold_id>/confirm", methods=["POST"])
+def holds_confirm(hold_id):
+    try:
+        hold = confirm_hold(hold_id)
+        return jsonify(hold)
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 409
+
+
+@app.route("/api/holds/<hold_id>/release", methods=["POST"])
+def holds_release(hold_id):
+    try:
+        hold = release_hold(hold_id)
+        return jsonify(hold)
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 409
+
+
+@app.route("/api/farms/<farm_id>/holds", methods=["GET"])
+def farm_holds(farm_id):
+    status = request.args.get("status")
+    holds = get_farm_holds(farm_id, status=status)
+    return jsonify({"farm_id": farm_id, "holds": holds})
 
 
 @app.route("/api/health", methods=["GET"])

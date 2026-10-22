@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://safeherd.dev/schemas/fire_snapshot.json",
+  "title": "Fire Snapshot",
+  "type": "object",
+  "required": ["fire_id", "timestamp", "origin", "projected_perimeters"],
+  "properties": {
+    "fire_id": { "type": "string", "minLength": 1 },
+    "snapshot_id": { "type": "string" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "origin": {
+      "type": "object",
+      "required": ["lat", "lon"],
+      "properties": {
+        "lat": { "type": "number" },
+        "lon": { "type": "number" }
+      }
+    },
+    "active_hotspots": { "type": "array", "items": { "type": "object" } },
+    "current_perimeter": { "type": ["object", "null"] },
+    "projected_perimeters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["hours", "geometry"],
+        "properties": {
+          "hours": { "type": "number", "exclusiveMinimum": 0 },
+          "horizon_min": { "type": "number" },
+          "geometry": { "type": "object" }
+        }
+      }
+    },
+    "danger_zone": { "type": ["object", "null"] },
+    "wind": { "type": "object" },
+    "weather": { "type": "object" },
+    "farms_at_risk": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["farm_id", "estimated_time_to_fire_hours"],
+        "properties": {
+          "farm_id": { "type": "string" },
+          "name": { "type": "string" },
+          "lat": { "type": "number" },
+          "lon": { "type": "number" },
+          "estimated_time_to_fire_hours": { "type": ["number", "null"] },
+          "risk_level": { "type": "string" }
+        }
+      }
+    },
+    "source": { "type": "string", "enum": ["firms_live", "scenario_replay"] },
+    "schema_version": { "type": "string" }
+  },
+  "additionalProperties": false
+}

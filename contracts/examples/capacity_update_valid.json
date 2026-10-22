@@ -1,0 +1,8 @@
+{
+  "facility_id": "del_mar_fairgrounds",
+  "capacity_version": 42,
+  "available": {"horses": 1200, "miniature_horses": 200, "mules": 100, "donkeys": 100},
+  "holds_active": 3,
+  "updated_at": "2017-12-07T18:05:01Z",
+  "schema_version": "0.2"
+}

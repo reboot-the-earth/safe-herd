@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://safeherd.dev/schemas/capacity_hold_request.json",
+  "title": "Capacity Hold Request",
+  "type": "object",
+  "required": ["request_id", "farm_id", "facility_id", "animals"],
+  "properties": {
+    "request_id": { "type": "string", "minLength": 1 },
+    "farm_id": { "type": "string" },
+    "facility_id": { "type": "string" },
+    "animals": {
+      "type": "object",
+      "additionalProperties": { "type": "integer", "minimum": 1 },
+      "minProperties": 1
+    },
+    "fire_snapshot_id": { "type": "string" },
+    "requested_at": { "type": "string", "format": "date-time" },
+    "schema_version": { "type": "string" }
+  },
+  "additionalProperties": false
+}

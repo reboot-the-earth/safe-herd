@@ -1,0 +1,20 @@
+{
+  "id": "del_mar_fairgrounds",
+  "name": "Del Mar Fairgrounds",
+  "lat": 32.9741,
+  "lon": -117.2684,
+  "accepts": ["horses", "miniature_horses", "mules", "donkeys"],
+  "capacity": {"horses": 1500, "miniature_horses": 200, "mules": 100, "donkeys": 100},
+  "infrastructure": ["stalls", "pens", "water", "feed_available", "vet_on_call"],
+  "access_road": "Via de la Valle / Jimmy Durante Blvd",
+  "trailer_access": true,
+  "hours": "24hr during emergencies",
+  "contact": "858-755-1161",
+  "distance_from_fire_origin_km": 58,
+  "county": "San Diego",
+  "verified": true,
+  "volunteer_run": false,
+  "has_own_feed": true,
+  "notes": "Primary horse evacuation site for SD County.",
+  "source": "SD County Emergency Animal Plan"
+}

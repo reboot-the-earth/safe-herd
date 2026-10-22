@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://safeherd.dev/schemas/capacity_update.json",
+  "title": "Capacity Update",
+  "description": "Published by a facility agent whenever its capacity changes.",
+  "type": "object",
+  "required": ["facility_id", "capacity_version", "available", "updated_at"],
+  "properties": {
+    "facility_id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+    "capacity_version": { "type": "integer", "minimum": 1 },
+    "available": {
+      "type": "object",
+      "additionalProperties": { "type": "integer", "minimum": 0 }
+    },
+    "holds_active": { "type": "integer", "minimum": 0 },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "schema_version": { "type": "string" }
+  },
+  "additionalProperties": false
+}

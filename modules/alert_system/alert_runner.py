@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "modules"))
 
 from fire_detection import get_fire_data  # type: ignore
@@ -58,7 +59,8 @@ def run_once(send_plans: bool = False) -> dict:
         "alerts_sent": 0,
     }
 
-    facilities_data = json.loads((ROOT / "data" / "facilities.json").read_text())
+    from contracts.loader import load_facilities as _load_fac
+    facilities_data = {"facilities": _load_fac()}
     fire_snapshot = json.loads((ROOT / "data" / "fire_data.json").read_text())
     community = load_community_farms()
     at_risk_ids = {f["farm_id"] for f in at_risk}

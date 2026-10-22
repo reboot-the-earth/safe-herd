@@ -38,8 +38,8 @@ from trip_calculator import calculate_trips, summarize_trips
 # ---------------------------------------------------------------------------
 
 def _reset_reservations():
-    """Wipe the reservation file between tests."""
-    capacity_manager._save([])
+    """Wipe the holds database between tests."""
+    capacity_manager.reset_db()
 
 
 def _print_section(title: str):
@@ -59,7 +59,9 @@ def _print_result(result: dict):
     print(f"  Total hours:      {result.get('total_evacuation_hours', 0):.2f} h")
     print(f"  Reservations:     {len(reservations)}")
     for r in reservations:
-        print(f"    - {r['count']} {r['species']} @ {r['facility_name']} (expires {r['expires']})")
+        animals = r.get("animals", {})
+        summary = ", ".join(f"{c} {s}" for s, c in animals.items())
+        print(f"    - {summary} @ {r['facility_name']} (expires {r['expires']})")
     if warnings:
         print("  Warnings:")
         for w in warnings:
@@ -250,17 +252,17 @@ def test_capacity_depletion():
 
     from capacity_manager import reserve_capacity
 
-    r1 = reserve_capacity("farm_a", "ramona_rodeo_grounds", "cattle", 100, ramona)
+    r1 = reserve_capacity("farm_a", "ramona_rodeo_grounds", animals={"cattle": 100}, facility=ramona)
     available_after_1 = get_available_capacity(ramona, "cattle")
     print(f"  After 100 cattle reserved: {available_after_1} available (expected 140)")
 
-    r2 = reserve_capacity("farm_b", "ramona_rodeo_grounds", "cattle", 100, ramona)
+    r2 = reserve_capacity("farm_b", "ramona_rodeo_grounds", animals={"cattle": 100}, facility=ramona)
     available_after_2 = get_available_capacity(ramona, "cattle")
     print(f"  After 200 cattle reserved: {available_after_2} available (expected 40)")
 
     # Third reservation of 100 should fail (only 40 left)
     try:
-        reserve_capacity("farm_c", "ramona_rodeo_grounds", "cattle", 100, ramona)
+        reserve_capacity("farm_c", "ramona_rodeo_grounds", animals={"cattle": 100}, facility=ramona)
         assert False, "Should have raised ValueError — not enough capacity"
     except ValueError as e:
         print(f"  Correctly rejected over-booking: {e}")

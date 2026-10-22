@@ -1,0 +1,18 @@
+{
+  "fire_id": "lilac_2017",
+  "snapshot_id": "lilac_2017_20171207T1800Z",
+  "timestamp": "2017-12-07T18:00:00Z",
+  "origin": {"lat": 33.317, "lon": -117.208},
+  "projected_perimeters": [
+    {"hours": 1, "horizon_min": 60, "geometry": {"type": "Polygon", "coordinates": [[[-117.3, 33.3], [-117.2, 33.3], [-117.2, 33.35], [-117.3, 33.35], [-117.3, 33.3]]]}},
+    {"hours": 6, "horizon_min": 360, "geometry": {"type": "Polygon", "coordinates": [[[-117.4, 33.25], [-117.1, 33.25], [-117.1, 33.4], [-117.4, 33.4], [-117.4, 33.25]]]}}
+  ],
+  "danger_zone": null,
+  "wind": {"speed_kmh": 40, "direction_deg": 270},
+  "weather": {},
+  "farms_at_risk": [
+    {"farm_id": "valley_center_ranch", "estimated_time_to_fire_hours": 3.7}
+  ],
+  "source": "scenario_replay",
+  "schema_version": "0.2"
+}

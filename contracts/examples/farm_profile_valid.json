@@ -1,0 +1,11 @@
+{
+  "farm_id": "valley_center_ranch",
+  "name": "Valley Center Ranch",
+  "lat": 33.22,
+  "lon": -117.03,
+  "animals": [
+    {"species": "cattle", "count": 150},
+    {"species": "horses", "count": 8}
+  ],
+  "trailer_capacity": {"cattle": 20, "horses": 4}
+}

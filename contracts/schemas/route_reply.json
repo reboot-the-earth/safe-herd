@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://safeherd.dev/schemas/route_reply.json",
+  "title": "Route Reply",
+  "type": "object",
+  "required": ["farm_coords", "fire_snapshot_id", "routes_to_facilities"],
+  "properties": {
+    "farm_coords": {
+      "type": "object",
+      "required": ["lat", "lon"],
+      "properties": {
+        "lat": { "type": "number" },
+        "lon": { "type": "number" }
+      }
+    },
+    "fire_snapshot_id": { "type": "string" },
+    "graph_source": { "type": "string", "enum": ["osm", "demo"] },
+    "routes_to_facilities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["facility_id", "status"],
+        "properties": {
+          "facility_id": { "type": "string" },
+          "facility_name": { "type": "string" },
+          "facility_lat": { "type": "number" },
+          "facility_lon": { "type": "number" },
+          "status": { "type": "string" },
+          "total_time_min": { "type": "number" },
+          "distance_km": { "type": "number" },
+          "route_geometry": { "type": "object" },
+          "segments": { "type": "array", "items": { "type": "object" } }
+        }
+      }
+    },
+    "schema_version": { "type": "string" }
+  },
+  "additionalProperties": false
+}
